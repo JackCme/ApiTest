@@ -1,16 +1,41 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page contentType="text/html; charset=utf-8" errorPage="/error.jsp" %>
+<%@ page import="java.util.*" %>
+<!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=Fb6yUt0Z8Dy9KXt8oNtc"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-<title>Insert title here</title>
+	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=Fb6yUt0Z8Dy9KXt8oNtc"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Insert title here</title>
 </head>
 <body>
 	<h1>Hello JSP!</h1>
 	
+	<p>Total API data count = <%= request.getAttribute("totalCount") %> </p>
+	
 	<div id="map" style="border:1px solid #000;"></div>
+	
+	<%
+	/*
+ 		String[] gu = (String[])request.getAttribute("gu");
+ 		String[] dong = (String[])request.getAttribute("dong");
+	 	
+ 		Set<String> set = new LinkedHashSet<String>(Arrays.asList(gu));
+ 		String[] unique = (String[])set.toArray();
+ 	*/
+	%>
+	 
+	 
+	 <select>
+	 	<option>${gu }</option>
+	 	
+	 </select>
+	 
+	 <select>
+	 	<option>${dong }</option>
+	 </select>
+	 
+	 
+	<!--
 	<script type="text/javascript">
                 var oSeoulCityPoint = new nhn.api.map.LatLng(37.5675451, 126.9773356);
                 var defaultLevel = 11;
@@ -25,13 +50,16 @@
                                                 activateBicycleMap : false,
                                                 minMaxLevel : [ 1, 14 ],
                                                 size : new nhn.api.map.Size(800, 480)           });
+                
+                //ì¤Œ ìŠ¬ë¼ì´ë” 
                 var oSlider = new nhn.api.map.ZoomControl();
                 oMap.addControl(oSlider);
                 oSlider.setPosition({
                         top : 10,
                         left : 10
                 });
-
+				
+                //ì§€ë„ íƒ€ì… ë²„íŠ¼ 
                 var oMapTypeBtn = new nhn.api.map.MapTypeBtn();
                 oMap.addControl(oMapTypeBtn);
                 oMapTypeBtn.setPosition({
@@ -39,6 +67,7 @@
                         right : 80
                 });
                 
+                //ì£¼ì œë³„ ì§€ë„ ë²„íŠ¼
                 var oThemeMapBtn = new nhn.api.map.ThemeMapBtn();
                 oThemeMapBtn.setPosition({
                         bottom : 10,
@@ -47,25 +76,25 @@
                 oMap.addControl(oThemeMapBtn);
 
                 /*
-                var oBicycleGuide = new nhn.api.map.BicycleGuide(); // - ÀÚÀü°Å ¹ü·Ê ¼±¾ğ
+                var oBicycleGuide = new nhn.api.map.BicycleGuide(); // - ìì „ê±° ë²”ë¡€ ì„ ì–¸
                 oBicycleGuide.setPosition({
                         top : 10,
                         right : 10
-                }); // - ÀÚÀü°Å ¹ü·Ê À§Ä¡ ÁöÁ¤
-                oMap.addControl(oBicycleGuide);// - ÀÚÀü°Å ¹ü·Ê¸¦ Áöµµ¿¡ Ãß°¡.
+                }); // - ìì „ê±° ë²”ë¡€ ìœ„ì¹˜ ì§€ì •
+                oMap.addControl(oBicycleGuide);// - ìì „ê±° ë²”ë¡€ë¥¼ ì§€ë„ì— ì¶”ê°€.
 
-                var oTrafficGuide = new nhn.api.map.TrafficGuide(); // - ±³Åë ¹ü·Ê ¼±¾ğ
+                var oTrafficGuide = new nhn.api.map.TrafficGuide(); // - êµí†µ ë²”ë¡€ ì„ ì–¸
                 oTrafficGuide.setPosition({
                         bottom : 30,
                         left : 10
-                });  // - ±³Åë ¹ü·Ê À§Ä¡ ÁöÁ¤.
-                oMap.addControl(oTrafficGuide); // - ±³Åë ¹ü·Ê¸¦ Áöµµ¿¡ Ãß°¡.
+                });  // - êµí†µ ë²”ë¡€ ìœ„ì¹˜ ì§€ì •.
+                oMap.addControl(oTrafficGuide); // - êµí†µ ë²”ë¡€ë¥¼ ì§€ë„ì— ì¶”ê°€.
 
-                var trafficButton = new nhn.api.map.TrafficMapBtn(); // - ½Ç½Ã°£ ±³Åë Áöµµ ¹öÆ° ¼±¾ğ
+                var trafficButton = new nhn.api.map.TrafficMapBtn(); // - ì‹¤ì‹œê°„ êµí†µ ì§€ë„ ë²„íŠ¼ ì„ ì–¸
                 trafficButton.setPosition({
                         bottom:10, 
                         right:150
-                }); // - ½Ç½Ã°£ ±³Åë Áöµµ ¹öÆ° À§Ä¡ ÁöÁ¤
+                }); // - ì‹¤ì‹œê°„ êµí†µ ì§€ë„ ë²„íŠ¼ ìœ„ì¹˜ ì§€ì •
                 oMap.addControl(trafficButton);
 				*/
                 var oSize = new nhn.api.map.Size(28, 37);
@@ -81,8 +110,8 @@
                         left :20
                 });
 
-                var oLabel = new nhn.api.map.MarkerLabel(); // - ¸¶Ä¿ ¶óº§ ¼±¾ğ.
-                oMap.addOverlay(oLabel); // - ¸¶Ä¿ ¶óº§ Áöµµ¿¡ Ãß°¡. ±âº»Àº ¶óº§ÀÌ º¸ÀÌÁö ¾Ê´Â »óÅÂ·Î Ãß°¡µÊ.
+                var oLabel = new nhn.api.map.MarkerLabel(); // - ë§ˆì»¤ ë¼ë²¨ ì„ ì–¸.
+                oMap.addOverlay(oLabel); // - ë§ˆì»¤ ë¼ë²¨ ì§€ë„ì— ì¶”ê°€. ê¸°ë³¸ì€ ë¼ë²¨ì´ ë³´ì´ì§€ ì•ŠëŠ” ìƒíƒœë¡œ ì¶”ê°€ë¨.
 
                 oInfoWnd.attach('changeVisible', function(oCustomEvent) {
                         if (oCustomEvent.visible) {
@@ -91,26 +120,26 @@
                 });
                 
                 var oPolyline = new nhn.api.map.Polyline([], {
-                        strokeColor : '#f00', // - ¼±ÀÇ »ö±ò
-                        strokeWidth : 5, // - ¼±ÀÇ µÎ²²
-                        strokeOpacity : 0.5 // - ¼±ÀÇ Åõ¸íµµ
-                }); // - polyline ¼±¾ğ, Ã¹¹øÂ° ÀÎÀÚ´Â ¼±ÀÌ ±×·ÁÁú Á¡ÀÇ À§Ä¡. ÇöÀç´Â ¾øÀ½.
-                oMap.addOverlay(oPolyline); // - Áöµµ¿¡ ¼±À» Ãß°¡ÇÔ.
+                        strokeColor : '#f00', // - ì„ ì˜ ìƒ‰ê¹”
+                        strokeWidth : 5, // - ì„ ì˜ ë‘ê»˜
+                        strokeOpacity : 0.5 // - ì„ ì˜ íˆ¬ëª…ë„
+                }); // - polyline ì„ ì–¸, ì²«ë²ˆì§¸ ì¸ìëŠ” ì„ ì´ ê·¸ë ¤ì§ˆ ì ì˜ ìœ„ì¹˜. í˜„ì¬ëŠ” ì—†ìŒ.
+                oMap.addOverlay(oPolyline); // - ì§€ë„ì— ì„ ì„ ì¶”ê°€í•¨.
 
                 oMap.attach('mouseenter', function(oCustomEvent) {
 
                         var oTarget = oCustomEvent.target;
-                        // ¸¶Ä¿À§¿¡ ¸¶¿ì½º ¿Ã¶ó°£°Å¸é
+                        // ë§ˆì»¤ìœ„ì— ë§ˆìš°ìŠ¤ ì˜¬ë¼ê°„ê±°ë©´
                         if (oTarget instanceof nhn.api.map.Marker) {
                                 var oMarker = oTarget;
-                                oLabel.setVisible(true, oMarker); // - Æ¯Á¤ ¸¶Ä¿¸¦ ÁöÁ¤ÇÏ¿© ÇØ´ç ¸¶Ä¿ÀÇ titleÀ» º¸¿©ÁØ´Ù.
+                                oLabel.setVisible(true, oMarker); // - íŠ¹ì • ë§ˆì»¤ë¥¼ ì§€ì •í•˜ì—¬ í•´ë‹¹ ë§ˆì»¤ì˜ titleì„ ë³´ì—¬ì¤€ë‹¤.
                         }
                 });
 
                 oMap.attach('mouseleave', function(oCustomEvent) {
 
                         var oTarget = oCustomEvent.target;
-                        // ¸¶Ä¿À§¿¡¼­ ¸¶¿ì½º ³ª°£°Å¸é
+                        // ë§ˆì»¤ìœ„ì—ì„œ ë§ˆìš°ìŠ¤ ë‚˜ê°„ê±°ë©´
                         if (oTarget instanceof nhn.api.map.Marker) {
                                 oLabel.setVisible(false);
                         }
@@ -120,16 +149,16 @@
                         var oPoint = oCustomEvent.point;
                         var oTarget = oCustomEvent.target;
                         oInfoWnd.setVisible(false);
-                        // ¸¶Ä¿ Å¬¸¯ÇÏ¸é
+                        // ë§ˆì»¤ í´ë¦­í•˜ë©´
                         if (oTarget instanceof nhn.api.map.Marker) {
-                                // °ãÄ§ ¸¶Ä¿ Å¬¸¯ÇÑ°Å¸é
+                                // ê²¹ì¹¨ ë§ˆì»¤ í´ë¦­í•œê±°ë©´
                                 if (oCustomEvent.clickCoveredMarker) {
                                         return;
                                 }
-                                // - InfoWindow¿¡ µé¾î°¥ ³»¿ëÀº setContent·Î ÀÚÀ¯·Ó°Ô ³ÖÀ» ¼ö ÀÖ½À´Ï´Ù. ¿ÜºÎ css¸¦ ÀÌ¿ëÇÒ ¼ö ÀÖÀ¸¸ç, 
-                                // - ¿ÜºÎ css¿¡ ¼±¾ğµÈ class¸¦ ÀÌ¿ëÇÏ¸é ÇØ´ç classÀÇ ½ºÅ¸ÀÏÀ» ¹Ù·Î Àû¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.
-                                // - ´Ü, DIVÀÇ position styleÀº absolute°¡ µÇ¸é ¾ÈµÇ¸ç, 
-                                // - absoluteÀÇ °æ¿ì autoPositionÀÌ µ¿ÀÛÇÏÁö ¾Ê½À´Ï´Ù. 
+                                // - InfoWindowì— ë“¤ì–´ê°ˆ ë‚´ìš©ì€ setContentë¡œ ììœ ë¡­ê²Œ ë„£ì„ ìˆ˜ ìˆìŠµë‹ˆë‹¤. ì™¸ë¶€ cssë¥¼ ì´ìš©í•  ìˆ˜ ìˆìœ¼ë©°, 
+                                // - ì™¸ë¶€ cssì— ì„ ì–¸ëœ classë¥¼ ì´ìš©í•˜ë©´ í•´ë‹¹ classì˜ ìŠ¤íƒ€ì¼ì„ ë°”ë¡œ ì ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
+                                // - ë‹¨, DIVì˜ position styleì€ absoluteê°€ ë˜ë©´ ì•ˆë˜ë©°, 
+                                // - absoluteì˜ ê²½ìš° autoPositionì´ ë™ì‘í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤. 
                                 oInfoWnd.setContent('<DIV style="border-top:1px solid; border-bottom:2px groove black; border-left:1px solid; border-right:2px groove black;margin-bottom:1px;color:black;background-color:white; width:auto; height:auto;">'+
                                         '<span style="color: #000000 !important;display: inline-block;font-size: 12px !important;font-weight: bold !important;letter-spacing: -1px !important;white-space: nowrap !important; padding: 2px 5px 2px 2px !important">' + 
                                         'Hello World <br /> ' + oTarget.getPoint()
@@ -140,14 +169,16 @@
                                 oInfoWnd.autoPosition();
                                 return;
                         }
-                        var oMarker = new nhn.api.map.Marker(oIcon, { title : '¸¶Ä¿ : ' + oPoint.toString() });
+                        var oMarker = new nhn.api.map.Marker(oIcon, { title : 'ë§ˆì»¤ : ' + oPoint.toString() });
                         oMarker.setPoint(oPoint);
                         oMap.addOverlay(oMarker);
 
-                        var aPoints = oPolyline.getPoints(); // - ÇöÀç Æú¸®¶óÀÎÀ» ÀÌ·ç´Â Á¡À» °¡Á®¿Í¼­ ¹è¿­¿¡ ÀúÀå.
-                        aPoints.push(oPoint); // - Ãß°¡ÇÏ°íÀÚ ÇÏ´Â Á¡À» Ãß°¡ÇÏ¿© ¹è¿­·Î ÀúÀåÇÔ.
-                        oPolyline.setPoints(aPoints); // - ÇØ´ç Æú¸®¶óÀÎ¿¡ ¹è¿­¿¡ ÀúÀåµÈ Á¡À» Ãß°¡ÇÔ
+                        var aPoints = oPolyline.getPoints(); // - í˜„ì¬ í´ë¦¬ë¼ì¸ì„ ì´ë£¨ëŠ” ì ì„ ê°€ì ¸ì™€ì„œ ë°°ì—´ì— ì €ì¥.
+                        aPoints.push(oPoint); // - ì¶”ê°€í•˜ê³ ì í•˜ëŠ” ì ì„ ì¶”ê°€í•˜ì—¬ ë°°ì—´ë¡œ ì €ì¥í•¨.
+                        oPolyline.setPoints(aPoints); // - í•´ë‹¹ í´ë¦¬ë¼ì¸ì— ë°°ì—´ì— ì €ì¥ëœ ì ì„ ì¶”ê°€í•¨
                 });
         </script>
+	-->
+
 </body>
 </html>
