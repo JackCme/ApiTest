@@ -2,7 +2,9 @@
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -18,6 +20,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -42,25 +46,42 @@ public class ApiDataServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
-
-		ApiData apiData = ApiData.getInstance();
 		
+		ApiData apiData = ApiData.getInstance();
+
 		int totalCount = apiData.getTotalCount();
 		
 		List<String> addr = apiData.getAddr();
+		List<String> idx = apiData.getIdx();
+		List<String> name = apiData.getName();
 		
-		List<String> gu = new ArrayList<String>(), dong = new ArrayList<String>();
+		Set<String> gu = new LinkedHashSet<String>();
+		Set<String> dong = new LinkedHashSet<String>();
+		
 		
 		for(String a : addr) {
+			//±¸ ±¸ºÐ
+			/*
+			String[] splitStr = a.split("\uAD6C ");
+			
+			gu.add(splitStr[0]);
+			dong.add(splitStr[1].split("(\uB3D9)")[0]);
+			*/
+			
 			String[] splitStr = a.split(" ");
+			
 			gu.add(splitStr[0]);
 			dong.add(splitStr[1]);
 		}
 
 		request.setAttribute("totalCount", totalCount);
+		request.setAttribute("idx", idx);
+		request.setAttribute("name", name);
+		request.setAttribute("addr", addr);
 		request.setAttribute("gu", gu);
 		request.setAttribute("dong", dong);
-		
+
+
 		RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/index.jsp");
 		requestDispatcher.forward(request, response);
 	}

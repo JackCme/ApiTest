@@ -50,7 +50,7 @@ public class ApiData {
 			
 			expression = "//*/item";
 			
-			NodeList nodeList = (NodeList)xpath.evaluate(expression, document, XPathConstants.NODESET);
+			NodeList nodeList = (NodeList)xpath.compile(expression).evaluate(document, XPathConstants.NODESET);
 			
 			for(int i = 0; i < nodeList.getLength(); i++ ) {
 				Node node = nodeList.item(i);
@@ -70,19 +70,19 @@ public class ApiData {
 					
 					if (name != null) 
 						this.name.add(name.getTextContent());
-					else this.idx.add("없음");
+					else this.name.add("없음");
 					
 					if (phone != null)
 						this.phone.add(phone.getTextContent());
-					else this.idx.add("없음");
+					else this.phone.add("없음");
 					
-					if (addr != null)
+					if (addr != null && !addr.getTextContent().equals(""))
 						this.addr.add(addr.getTextContent());
-					else this.idx.add("없음");
+					else this.addr.add("없음");
 					
-					if(category != null)
+					if(category != null && !category.getTextContent().equals(""))
 						this.category.add(category.getTextContent());
-					else this.idx.add("없음");
+					else this.category.add("없음");
 				}
 				
 			}
@@ -119,5 +119,6 @@ public class ApiData {
 	
 	public static ApiData getInstance() {
 		return apiData;
+		
 	}
 }

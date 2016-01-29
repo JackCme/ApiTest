@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=utf-8" errorPage="/error.jsp" %>
 <%@ page import="java.util.*" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,29 +12,36 @@
 <body>
 	<h1>Hello JSP!</h1>
 	
-	<p>Total API data count = <%= request.getAttribute("totalCount") %> </p>
+	<p>Total API data count = <c:out value="${totalCount }" /> </p>
 	
 	<div id="map" style="border:1px solid #000;"></div>
-	
-	<%
-	/*
- 		String[] gu = (String[])request.getAttribute("gu");
- 		String[] dong = (String[])request.getAttribute("dong");
-	 	
- 		Set<String> set = new LinkedHashSet<String>(Arrays.asList(gu));
- 		String[] unique = (String[])set.toArray();
- 	*/
-	%>
-	 
 	 
 	 <select>
-	 	<option>${gu }</option>
-	 	
+	 	<c:forEach items="${addr}" var="g">
+	 		<option><c:out value="${g}" /></option>
+	 	</c:forEach>
 	 </select>
 	 
 	 <select>
-	 	<option>${dong }</option>
+	 	<c:forEach items="${gu}" var="g">
+	 		<option><c:out value="${g}" /></option>
+	 	</c:forEach>
 	 </select>
+	 
+	 <select>
+	 	<c:forEach items="${dong}" var="d">
+	 		<option><c:out value="${d}" /></option>
+	 	</c:forEach>
+	 </select>
+	 <!-- 
+	 <table>
+	 <c:forEach var="i" begin="1" end="${totalCount }">
+	 	<tr>
+	 		<td></td>
+	 	</tr>
+	 </c:forEach>
+	  -->
+	 </table>
 	 
 	 
 	<!--
