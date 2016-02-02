@@ -1,34 +1,128 @@
 <%@ page contentType="text/html; charset=utf-8" errorPage="/error.jsp" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+	
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=Fb6yUt0Z8Dy9KXt8oNtc"></script>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta charset="utf-8">
 	<title>Insert title here</title>
 </head>
 <body>
+
+	<nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu-navbar">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		        <a class="navbar-brand" href="/ApiTest">Menu</a>
+		    </div>
+		      <div class="collapse navbar-collapse" id="menu-navbar">
+		        <ul class="nav navbar-nav">
+		        </ul>
+		        <ul class="nav navbar-nav navbar-right">
+		          <li><a href="/ApiTest"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+		       
+		        </ul>
+		      </div>
+		  </div>
+		</nav>
+
+
+<div class="container">
+
+<sql:setDataSource var="apiData" driver="com.mysql.jdbc.Driver"
+     url="jdbc:mysql://dbinstance.cmpfvsw5d4kz.ap-northeast-1.rds.amazonaws.com:3306/api"
+     user="admin"  password="dbadministrator"/>
+     
 	<h1>Hello JSP!</h1>
 	
 	<p>Total API data count = <c:out value="${totalCount }" /> </p>
 	
-	<div id="map" style="border:1px solid #000;"></div>
-	 
-	 <select>
-	 	<c:forEach items="${gu}" var="g">
-	 		<option><c:out value="${g}" /></option>
-	 	</c:forEach>
-	 </select>
-	 
-	 <select>
-	 	<c:forEach items="${dong}" var="d">
-	 		<option><c:out value="${d}" /></option>
-	 	</c:forEach>
-	 </select>
-	 
-	<!--
+	<form method="get" name="searchForm" action="/ApiTest" class="">
+		<select name="choice">
+			<option value="searchName">상호</option>
+			<option value="searchDong">동</option>
+		</select>
+		<input type="text" name="searchValue" />
+		<input type="submit" value="찾기" />
+		
+	</form>
+	
+	<c:if test="${param.choice == 'searchName' }">
+		<sql:query dataSource="${apiData}" var="result">
+	 		SELECT * from apiTable where val002 like "%${param.searchValue}%";
+	 	</sql:query>
+	</c:if>
+	
+	<c:if test="${param.choice == 'searchDong' }">
+		<sql:query dataSource="${apiData}" var="result">
+	 		SELECT * from apiTable where val004 like "%${param.searchValue}%";
+	 	</sql:query>
+	</c:if>
+	
+	
+ 	<c:if test="${param.searchValue != null && param.searchValue != \"\"}">
+ 	<div class="table-responsive">
+ 	 	<table class="table table-striped table-hover">
+	 		<thead>
+	 			<tr>
+	 				<th>상호</th>
+	 				<th>전화번호</th>
+	 				<th>주소</th>
+	 				<th>분류</th>
+	 			</tr>
+	 		</thead>
+	 		
+	 		<tbody>
+	 			<c:forEach items="${result.rows }" var="row">
+	 			<tr>
+	 				<td><c:out value="${row.val002 }" /> </td>
+	 				<td><c:out value="${row.val003 }" /> </td>
+	 				<td><c:out value="${row.val004 }" /> </td>
+	 				<td><c:out value="${row.val005 }" /> </td>
+	 			</tr>
+	 			</c:forEach>
+	 			
+	 		
+	 		</tbody>
+	 	</table>
+ 
+ 	</div>
+	
+ 	</c:if>
+ 	<div id="map" style="border:1px solid #000;"></div>
+	
+ 	 
+</div>
+ 	<script type="text/javascript">
+ 		var form = document.searchForm;
+ 		var d = form.dong;
+ 		var g = form.gu;
+ 		
+ 		$("#searchBtn").click(function() {
+ 			alert("구: " + g.options[g.selectedIndex].value + "\n동: " + d.options[d.selectedIndex].value);
+ 		});
+ 		
+ 	</script>
+ 	
+ 	<!-- 
 	<script type="text/javascript">
                 var oSeoulCityPoint = new nhn.api.map.LatLng(37.5675451, 126.9773356);
                 var defaultLevel = 11;
@@ -68,28 +162,6 @@
                 });
                 oMap.addControl(oThemeMapBtn);
 
-                /*
-                var oBicycleGuide = new nhn.api.map.BicycleGuide(); // - 자전거 범례 선언
-                oBicycleGuide.setPosition({
-                        top : 10,
-                        right : 10
-                }); // - 자전거 범례 위치 지정
-                oMap.addControl(oBicycleGuide);// - 자전거 범례를 지도에 추가.
-
-                var oTrafficGuide = new nhn.api.map.TrafficGuide(); // - 교통 범례 선언
-                oTrafficGuide.setPosition({
-                        bottom : 30,
-                        left : 10
-                });  // - 교통 범례 위치 지정.
-                oMap.addControl(oTrafficGuide); // - 교통 범례를 지도에 추가.
-
-                var trafficButton = new nhn.api.map.TrafficMapBtn(); // - 실시간 교통 지도 버튼 선언
-                trafficButton.setPosition({
-                        bottom:10, 
-                        right:150
-                }); // - 실시간 교통 지도 버튼 위치 지정
-                oMap.addControl(trafficButton);
-				*/
                 var oSize = new nhn.api.map.Size(28, 37);
                 var oOffset = new nhn.api.map.Size(14, 37);
                 var oIcon = new nhn.api.map.Icon('http://static.naver.com/maps2/icons/pin_spot2.png', oSize, oOffset);
@@ -104,11 +176,13 @@
                 });
 
                 var oLabel = new nhn.api.map.MarkerLabel(); // - 마커 라벨 선언.
+                
                 oMap.addOverlay(oLabel); // - 마커 라벨 지도에 추가. 기본은 라벨이 보이지 않는 상태로 추가됨.
-
+               
+                
                 oInfoWnd.attach('changeVisible', function(oCustomEvent) {
                         if (oCustomEvent.visible) {
-                                oLabel.setVisible(false);
+                                oLabel.setVisible(true);
                         }
                 });
                 
@@ -171,7 +245,13 @@
                         oPolyline.setPoints(aPoints); // - 해당 폴리라인에 배열에 저장된 점을 추가함
                 });
         </script>
-	-->
+ -->
+
+
 
 </body>
+
+
+	
+
 </html>

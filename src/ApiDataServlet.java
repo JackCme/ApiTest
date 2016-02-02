@@ -46,6 +46,8 @@ public class ApiDataServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("utf-8");
 		
 		ApiData apiData = ApiData.getInstance();
 
@@ -58,6 +60,8 @@ public class ApiDataServlet extends HttpServlet {
 		Set<String> gu = new LinkedHashSet<String>();
 		Set<String> dong = new LinkedHashSet<String>();
 		
+		String query_gu = request.getParameter("gu");
+		String query_dong = request.getParameter("dong");
 		
 		for(String a : addr) {
 			String[] splitStr = a.split(" ");
@@ -83,7 +87,7 @@ public class ApiDataServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//doGet(request, response);
+		doGet(request, response);
 	}
 
 
