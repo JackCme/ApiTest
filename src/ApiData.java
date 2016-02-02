@@ -1,3 +1,7 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -9,6 +13,9 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import com.mysql.jdbc.PreparedStatement;
+
 import org.w3c.dom.Node;
 
 //ApiData 싱글톤 클래스
@@ -27,66 +34,49 @@ public class ApiData {
 	private List<String> addr = new ArrayList<String>();
 	private List<String> category = new ArrayList<String>();
 	
+	private Connection conn = null;
+	private Statement stat = null;
+	private ResultSet rs = null;
+	private PreparedStatement pstmt = null;
+	
 	private ApiData() {
-		try {
-			//공공데이터 API 파라미터 변수
-			int numOfRows = 0;
-			int pageNo = 1;
-			
-			//총 개수 파싱을 위해 0개 데이터 요청
-			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document document = docBuilder.parse(API_URL + "&numOfRows=" + numOfRows);
-			XPath xpath = XPathFactory.newInstance().newXPath();
-			
-			String expression = "//*/totalCount";
-			//API의 총 개수 데이터 파싱
-			NodeList totalCountNode = (NodeList)xpath.compile(expression).evaluate(document, XPathConstants.NODESET);
-			numOfRows = Integer.parseInt(totalCountNode.item(0).getTextContent());
-			
-			this.totalCount = numOfRows;
-			//총 데이터 요청
-			
-			document = docBuilder.parse(API_URL + "&numOfRows=" + numOfRows);
-			
-			expression = "//*/item";
-			
-			NodeList nodeList = (NodeList)xpath.compile(expression).evaluate(document, XPathConstants.NODESET);
-			
-			for(int i = 0; i < nodeList.getLength(); i++ ) {
-				Node node = nodeList.item(i);
-				
-				if(node.getNodeType() == Node.ELEMENT_NODE) {
-					Element el = (Element) node;
-					
-					Element idx = (Element) el.getElementsByTagName("val001").item(0);
-					Element name = (Element) el.getElementsByTagName("val002").item(0);
-					Element phone = (Element) el.getElementsByTagName("val003").item(0);
-					Element addr = (Element) el.getElementsByTagName("val004").item(0);
-					Element category = (Element) el.getElementsByTagName("val005").item(0);
-					
-					if (idx != null) 
-						this.idx.add(idx.getTextContent());
-					else this.idx.add("없음");
-					
-					if (name != null) 
-						this.name.add(name.getTextContent());
-					else this.name.add("없음");
-					
-					if (phone != null)
-						this.phone.add(phone.getTextContent());
-					else this.phone.add("없음");
-					
-					if (addr != null && !addr.getTextContent().equals(""))
-						this.addr.add(addr.getTextContent());
-					else this.addr.add("없음");
-					
-					if(category != null && !category.getTextContent().equals(""))
-						this.category.add(category.getTextContent());
-					else this.category.add("없음");
-				}
-				
-			}
 		
+		String db_url="jdbc:mysql://dbinstance.cmpfvsw5d4kz.ap-northeast-1.rds.amazonaws.com:3306/api";
+		String db_user="admin";
+		String db_pwd="dbadministrator";
+		String query;
+		
+		try {
+			
+			Class.forName("com.mysql.jdbc.Driver");
+			conn=DriverManager.getConnection(db_url,db_user,db_pwd);
+			if(conn==null)
+				throw new Exception("DB 연결 Error");
+			
+			stat = conn.createStatement();
+			query = "select count(*) as total from apiTable";
+			rs = stat.executeQuery(query);
+			if(rs.next()) {
+				this.totalCount = rs.getInt("total");
+			}
+			
+			
+			query = "select * from apiTable";
+			pstmt = (PreparedStatement) conn.prepareStatement(query);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				idx.add(rs.getString("val001"));
+				name.add(rs.getString("val002"));
+				phone.add(rs.getString("val003"));
+				addr.add(rs.getString("val004"));
+				category.add(rs.getString("val005"));
+			}
+			
+			rs.close();
+			pstmt.close();
+			stat.close();
+			conn.close();
 		
 		} catch (Exception e) {
 			e.printStackTrace();

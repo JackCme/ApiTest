@@ -60,14 +60,6 @@ public class ApiDataServlet extends HttpServlet {
 		
 		
 		for(String a : addr) {
-			//±¸ ±¸ºÐ
-			/*
-			String[] splitStr = a.split("\uAD6C ");
-			
-			gu.add(splitStr[0]);
-			dong.add(splitStr[1].split("(\uB3D9)")[0]);
-			*/
-			
 			String[] splitStr = a.split(" ");
 			
 			gu.add(splitStr[0]);

@@ -17,12 +17,6 @@
 	<div id="map" style="border:1px solid #000;"></div>
 	 
 	 <select>
-	 	<c:forEach items="${addr}" var="g">
-	 		<option><c:out value="${g}" /></option>
-	 	</c:forEach>
-	 </select>
-	 
-	 <select>
 	 	<c:forEach items="${gu}" var="g">
 	 		<option><c:out value="${g}" /></option>
 	 	</c:forEach>
@@ -33,16 +27,6 @@
 	 		<option><c:out value="${d}" /></option>
 	 	</c:forEach>
 	 </select>
-	 <!-- 
-	 <table>
-	 <c:forEach var="i" begin="1" end="${totalCount }">
-	 	<tr>
-	 		<td></td>
-	 	</tr>
-	 </c:forEach>
-	  -->
-	 </table>
-	 
 	 
 	<!--
 	<script type="text/javascript">
