@@ -96,7 +96,18 @@
 	 			<c:forEach items="${result.rows }" var="row">
 	 			<tr>
 	 				<td><c:out value="${row.val002 }" /> </td>
-	 				<td><a href="tel:+8231${row.val003}"><c:out value="${row.val003 }" /></a></td>
+	 				<td>
+	 					<c:choose>
+	 						<c:when test="${fn:startsWith(row.val003,'0')}">
+	 							<a href="tel:${row.val003}"><c:out value="${row.val003 }" /></a>
+	 						</c:when>
+	 						<c:otherwise>
+	 							<a href="tel:031${row.val003}"><c:out value="${row.val003 }" /></a>
+	 						</c:otherwise>
+	 					</c:choose>
+	 					
+	 					
+	 				</td>
 	 				<td><c:out value="${row.val004 }" /> </td>
 	 				<td><c:out value="${row.val005 }" /> </td>
 	 			</tr>
