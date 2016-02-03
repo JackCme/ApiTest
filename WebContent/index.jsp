@@ -19,7 +19,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=Fb6yUt0Z8Dy9KXt8oNtc"></script>
 	<meta charset="utf-8">
-	<title>Insert title here</title>
+	<title>성남사랑가맹점 검색서비스</title>
 </head>
 <body>
 
@@ -51,16 +51,26 @@
      url="jdbc:mysql://dbinstance.cmpfvsw5d4kz.ap-northeast-1.rds.amazonaws.com:3306/api"
      user="admin"  password="dbadministrator"/>
      
-	<h1>Hello JSP!</h1>
-	
-	<p>Total API data count = <c:out value="${totalCount }" /> </p>
-	
+
 	<form method="get" name="searchForm" action="/ApiTest" class="">
 		<select name="choice">
-			<option value="searchName">상호</option>
 			<option value="searchDong">동</option>
+			<option value="searchName">상호</option>
 		</select>
-		<input type="text" name="searchValue" />
+		<select name="category">
+			<c:forEach items="${category}" var="cate">
+				<c:choose>
+					<c:when test="${cate == param.category}" >
+					<option value="${cate}" selected>${cate}</option>
+					</c:when>
+					<c:otherwise>
+					<option value="${cate}">${cate}</option>
+					</c:otherwise>
+				</c:choose>
+				
+			</c:forEach>
+		</select>
+		<input type="text" name="searchValue" value="${param.searchValue }" />
 		<input type="submit" value="찾기" />
 		
 	</form>
@@ -68,20 +78,20 @@
 	<c:if test="${param.choice == 'searchName' }">
 		<sql:query dataSource="${apiData}" var="result">
 	 		SELECT *
-	 		FROM apiTable where val002 like "%${param.searchValue}%";
+	 		FROM apiTable where val002 like "%${param.searchValue}%" AND val005="${param.category}";
 	 	</sql:query>
 	</c:if>
 	
 	<c:if test="${param.choice == 'searchDong' }">
 		<sql:query dataSource="${apiData}" var="result">
 	 		SELECT *
-	 		FROM apiTable where val004 like "%${param.searchValue}%";
+	 		FROM apiTable where val004 like "%${param.searchValue}%" AND val005="${param.category}";
 	 	</sql:query>
 	</c:if>
 	
 	
  	<c:if test="${param.searchValue != null && param.searchValue != \"\"}">
- 	<div class="table-responsive">
+ 	<div class="table-responsive" style="overflow:auto;height:500px;" >
  	 	<table class="table table-striped table-hover">
 	 		<thead>
 	 			<tr>
@@ -92,7 +102,8 @@
 	 			</tr>
 	 		</thead>
 	 		
-	 		<tbody>
+	 		<tbody >
+	 		
 	 			<c:forEach items="${result.rows }" var="row">
 	 			<tr>
 	 				<td><c:out value="${row.val002 }" /> </td>
@@ -118,22 +129,15 @@
 	 	</table>
  
  	</div>
-	
  	</c:if>
+ 	
  	<div id="map" style="border:1px solid #000;"></div>
 	
  	 
 </div>
- 	<script type="text/javascript">
- 		var form = document.searchForm;
- 		var d = form.dong;
- 		var g = form.gu;
- 		
- 		$("#searchBtn").click(function() {
- 			alert("구: " + g.options[g.selectedIndex].value + "\n동: " + d.options[d.selectedIndex].value);
- 		});
- 		
- 	</script>
+<div>
+	<a href="https://openapi.naver.com/v1/map/geocode?encoding=utf-8&coord=latlng&output=json&query=%EB%B6%88%EC%A0%95%EB%A1%9C%206">test</a>
+</div>
  	
  	<!-- 
 	<script type="text/javascript">

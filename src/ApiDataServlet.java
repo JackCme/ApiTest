@@ -56,9 +56,11 @@ public class ApiDataServlet extends HttpServlet {
 		List<String> addr = apiData.getAddr();
 		List<String> idx = apiData.getIdx();
 		List<String> name = apiData.getName();
+		List<String> cat = apiData.getCategory();
 		
 		Set<String> gu = new LinkedHashSet<String>();
 		Set<String> dong = new LinkedHashSet<String>();
+		Set<String> category = new LinkedHashSet<String>();
 		
 		String query_gu = request.getParameter("gu");
 		String query_dong = request.getParameter("dong");
@@ -69,11 +71,16 @@ public class ApiDataServlet extends HttpServlet {
 			gu.add(splitStr[0]);
 			dong.add(splitStr[1]);
 		}
+		
+		for(String c : cat) {
+			category.add(c);
+		}
 
 		request.setAttribute("totalCount", totalCount);
 		request.setAttribute("idx", idx);
 		request.setAttribute("name", name);
 		request.setAttribute("addr", addr);
+		request.setAttribute("category", category);
 		request.setAttribute("gu", gu);
 		request.setAttribute("dong", dong);
 
