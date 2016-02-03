@@ -67,13 +67,15 @@
 	
 	<c:if test="${param.choice == 'searchName' }">
 		<sql:query dataSource="${apiData}" var="result">
-	 		SELECT * from apiTable where val002 like "%${param.searchValue}%";
+	 		SELECT *
+	 		FROM apiTable where val002 like "%${param.searchValue}%";
 	 	</sql:query>
 	</c:if>
 	
 	<c:if test="${param.choice == 'searchDong' }">
 		<sql:query dataSource="${apiData}" var="result">
-	 		SELECT * from apiTable where val004 like "%${param.searchValue}%";
+	 		SELECT *
+	 		FROM apiTable where val004 like "%${param.searchValue}%";
 	 	</sql:query>
 	</c:if>
 	
@@ -94,7 +96,7 @@
 	 			<c:forEach items="${result.rows }" var="row">
 	 			<tr>
 	 				<td><c:out value="${row.val002 }" /> </td>
-	 				<td><c:out value="${row.val003 }" /> </td>
+	 				<td><a href="tel:+8231${row.val003}"><c:out value="${row.val003 }" /></a></td>
 	 				<td><c:out value="${row.val004 }" /> </td>
 	 				<td><c:out value="${row.val005 }" /> </td>
 	 			</tr>
