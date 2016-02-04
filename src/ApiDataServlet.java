@@ -1,6 +1,7 @@
 
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,6 +20,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -62,9 +69,6 @@ public class ApiDataServlet extends HttpServlet {
 		Set<String> dong = new LinkedHashSet<String>();
 		Set<String> category = new LinkedHashSet<String>();
 		
-		String query_gu = request.getParameter("gu");
-		String query_dong = request.getParameter("dong");
-		
 		for(String a : addr) {
 			String[] splitStr = a.split(" ");
 			
@@ -83,8 +87,28 @@ public class ApiDataServlet extends HttpServlet {
 		request.setAttribute("category", category);
 		request.setAttribute("gu", gu);
 		request.setAttribute("dong", dong);
-
-
+		
+		
+		//Geocode api 
+		/*
+		String clientId = "Fb6yUt0Z8Dy9KXt8oNtc";
+		String clientSecret = "uNk8ZBCBp_";
+		String encoded = URLEncoder.encode("성남시 분당구 야탑동 342-1", "UTF-8");
+		String url = "https://openapi.naver.com/v1/map/geocode?query=" + encoded;
+		 
+		 HttpClient client = HttpClientBuilder.create().build();
+		 HttpGet req = new HttpGet(url);
+		 
+		 req.addHeader("X-Naver-Client-Id", clientId);
+		 req.addHeader("X-Naver-Client-Secret", clientSecret);
+		 HttpResponse res = client.execute(req);
+		 
+		 HttpEntity res_entity = res.getEntity();
+		 String res_string = EntityUtils.toString(res_entity);
+		 
+		 request.setAttribute("res_string", res_string);
+		 
+		*/
 		RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/index.jsp");
 		requestDispatcher.forward(request, response);
 	}

@@ -52,7 +52,7 @@
      user="admin"  password="dbadministrator"/>
      
 
-	<form method="get" name="searchForm" action="/ApiTest" class="">
+	<form method="post" name="searchForm" action="/ApiTest" class="">
 		<select name="choice">
 			<option value="searchDong">동</option>
 			<option value="searchName">상호</option>
@@ -89,12 +89,18 @@
 	 	</sql:query>
 	</c:if>
 	
+	<%
+		int idx = 0;
+		List<String> t_addr = new ArrayList<String>();
+	
+	%>
 	
  	<c:if test="${param.searchValue != null && param.searchValue != \"\"}">
  	<div class="table-responsive" style="overflow:auto;height:500px;" >
  	 	<table class="table table-striped table-hover">
 	 		<thead>
 	 			<tr>
+	 				<th>idx</th>
 	 				<th>상호</th>
 	 				<th>전화번호</th>
 	 				<th>주소</th>
@@ -105,7 +111,9 @@
 	 		<tbody >
 	 		
 	 			<c:forEach items="${result.rows }" var="row">
+	 			
 	 			<tr>
+	 				<td><%=idx %></td>
 	 				<td><c:out value="${row.val002 }" /> </td>
 	 				<td>
 	 					<c:choose>
@@ -119,7 +127,14 @@
 	 					
 	 					
 	 				</td>
-	 				<td><c:out value="${row.val004 }" /> </td>
+	 				<% pageContext.setAttribute("idx",idx); %>
+	 				<td data-toggle="modal" data-target="#mapModal" data-idx="<c:out value="${idx }" />" data-name="${row.val002}" data-addr="${row.val004}">
+	 					<c:set var="a" value="${row.val004 }"  />
+	 					<% t_addr.add((String)pageContext.getAttribute("a")); %>
+	 					<%= t_addr.get(idx) %>
+	 					<% idx++; %>
+	 					<!--<c:out value="${row.val004 }" />-->
+	 				</td>
 	 				<td><c:out value="${row.val005 }" /> </td>
 	 			</tr>
 	 			</c:forEach>
@@ -127,16 +142,32 @@
 	 		
 	 		</tbody>
 	 	</table>
- 
  	</div>
  	</c:if>
  	
- 	<div id="map" style="border:1px solid #000;"></div>
+ 	
+ 	
+ 	<jsp:include page="/mapView.jsp" flush="false" />
+ 	
+ 	<script type="text/javascript">
 	
+		$('#mapModal').on('show.bs.modal',function(event) {
+			var td = $(event.relatedTarget);
+			var name = td.data('name');
+			var idx = td.data('idx');
+			var addr = td.data('addr');
+			
+			frame_form.target = "frame";
+			frame_form.action = "/ApiTest/mapView.jsp?idx=" + idx;
+			frame_form.submit();
+			
+			$(this).find('.modal-title').text(name);
+			
+			
+		})
+	
+	</script>
  	 
-</div>
-<div>
-	<a href="https://openapi.naver.com/v1/map/geocode?encoding=utf-8&coord=latlng&output=json&query=%EB%B6%88%EC%A0%95%EB%A1%9C%206">test</a>
 </div>
  	
  	<!-- 
