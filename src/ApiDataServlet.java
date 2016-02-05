@@ -1,6 +1,7 @@
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -26,6 +27,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -118,7 +120,32 @@ public class ApiDataServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+		//doGet(request, response);
+		String ad = request.getParameter("address");
+		
+		String clientId = "Fb6yUt0Z8Dy9KXt8oNtc";
+		String clientSecret = "uNk8ZBCBp_";
+		String encoded = URLEncoder.encode(ad, "UTF-8");
+		String url = "https://openapi.naver.com/v1/map/geocode?query=" + encoded;
+	 
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpGet req = new HttpGet(url);
+		 
+		req.addHeader("X-Naver-Client-Id", clientId);
+		req.addHeader("X-Naver-Client-Secret", clientSecret);
+		HttpResponse res = client.execute(req);
+		
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		
+		PrintWriter out = response.getWriter();
+		HttpEntity res_entity = res.getEntity();
+
+		String res_string = EntityUtils.toString(res_entity);
+		JSONObject result = new JSONObject(res_string);
+		
+		out.print(result);
+		
 	}
 
 
