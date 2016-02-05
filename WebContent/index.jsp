@@ -55,10 +55,11 @@
 	
 		<form method="get" name="searchForm" action="/ApiTest" role="form" class="form-inline">
 			<div class="form-group">
-				<select name="choice" class="form-control">
+				<!-- <select name="choice" class="form-control">
 					<option value="searchDong">동</option>
 					<option value="searchName">상호</option>
-				</select>
+				</select> -->
+				<label>업종</label>
 				<select name="category" class="form-control">
 					<c:forEach items="${category}" var="cate">
 						<c:choose>
@@ -72,6 +73,7 @@
 						
 					</c:forEach>
 				</select>
+				<label>찾을 주소</label>
 				<input type="text" name="searchValue" value="${param.searchValue }" class="form-control" placeholder="동을 입력하세요."/>
 				<input type="submit" value="찾기" class="form-control btn btn-success"/>	
 			</div>
@@ -79,20 +81,26 @@
 			
 		</form>
 		
+		<!-- 
 		<c:if test="${param.choice == 'searchName' }">
 			<sql:query dataSource="${apiData}" var="result">
 		 		SELECT *
 		 		FROM apiTable where val002 like "%${param.searchValue}%" AND val005="${param.category}";
 		 	</sql:query>
 		</c:if>
+		-->
 		
-		<c:if test="${param.choice == 'searchDong' }">
+		<!--<c:if test="${param.choice == 'searchDong' }">
 			<sql:query dataSource="${apiData}" var="result">
 		 		SELECT *
 		 		FROM apiTable where val004 like "%${param.searchValue}%" AND val005="${param.category}";
 		 	</sql:query>
-		</c:if>
+		</c:if>-->
 		
+		<sql:query dataSource="${apiData}" var="result">
+	 		SELECT *
+	 		FROM apiTable where val004 like "%${param.searchValue}%" AND val005="${param.category}";
+	 	</sql:query>
 	
 	 	<c:if test="${param.searchValue != null && param.searchValue != \"\"}">
 	 	<div class="table-responsive" style="overflow:auto;height:500px;" >
@@ -252,6 +260,7 @@
 					data: {address : addr},
 				}).done(function(json){
 					if(json != null) {
+						console.log(json);
 						var obj = JSON.parse(JSON.stringify(json));	
 						x = obj.result.items[0].point.x;
 						y = obj.result.items[0].point.y;
