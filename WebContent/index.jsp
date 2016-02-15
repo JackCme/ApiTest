@@ -8,6 +8,7 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="favicon.ico" rel="icon" type="image/x-icon" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -48,19 +49,30 @@
 	<!-- 컨테이너 -->
 	<div class="container">
 	
+		<div class="jumbotron">
+			<div style="text-align:center">
+				<h3>찾으실 업종을 선택하고 동 이름을 입력하세요.</h3>
+				<h4>모바일에선 검색결과에서 전화번호를 누르면 전화로 연결되고
+				주소를 누르면 해당 매장의 지도가 나옵니다.</h4>
+			</div>
+		</div>
+		
+	
 	<sql:setDataSource var="apiData" driver="com.mysql.jdbc.Driver"
 	     url="jdbc:mysql://dbinstance.cmpfvsw5d4kz.ap-northeast-1.rds.amazonaws.com:3306/api"
 	     user="admin"  password="dbadministrator"/>
 	     
-	
-		<form method="get" name="searchForm" action="/ApiTest" role="form" class="form-inline">
+	<div id="form-section" align="center">
+		<form method="get" name="searchForm" action="/ApiTest" role="form" class="form-horizontal">
 			<div class="form-group">
 				<!-- <select name="choice" class="form-control">
 					<option value="searchDong">동</option>
 					<option value="searchName">상호</option>
 				</select> -->
-				<label>업종</label>
-				<select name="category" class="form-control">
+			
+				<label class="control-label col-sm-4">업종</label>
+				<div class="col-sm-4">
+					<select name="category" class="form-control ">
 					<c:forEach items="${category}" var="cate">
 						<c:choose>
 							<c:when test="${cate == param.category}" >
@@ -72,15 +84,25 @@
 						</c:choose>
 						
 					</c:forEach>
-				</select>
-				<label>찾을 주소</label>
-				<input type="text" name="searchValue" value="${param.searchValue }" class="form-control" placeholder="동을 입력하세요."/>
-				<input type="submit" value="찾기" class="form-control btn btn-success"/>	
+					</select>
+				</div>
 			</div>
-			
-			
+				
+			<div class="form-group">
+				<label class="control-label col-sm-4">찾을 주소</label>
+				<div class="col-sm-4" >
+					<input type="text" name="searchValue" value="${param.searchValue }" class="form-control col-sm-10" placeholder="동을 입력하세요." required/>
+				</div>
+			</div>
+				<p></p>
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-4">
+      				<button type="submit" class="btn btn-success btn-block">찾기</button>
+    			</div>
+			</div>
+					
 		</form>
-		
+	</div>
 		<!-- 
 		<c:if test="${param.choice == 'searchName' }">
 			<sql:query dataSource="${apiData}" var="result">
@@ -214,12 +236,6 @@
 	                }
 	        });
 	        
-	        var oPolyline = new nhn.api.map.Polyline([], {
-	                strokeColor : '#f00', // - 선의 색깔
-	                strokeWidth : 5, // - 선의 두께
-	                strokeOpacity : 0.5 // - 선의 투명도
-	        }); // - polyline 선언, 첫번째 인자는 선이 그려질 점의 위치. 현재는 없음.
-	        oMap.addOverlay(oPolyline); // - 지도에 선을 추가함.
 	
 	        oMap.attach('mouseenter', function(oCustomEvent) {
 	
@@ -248,11 +264,15 @@
 				var name = td.data('name');
 				var addr = td.data('addr');
 				var phone = td.data('phone');
+					
+				if (!phone.startsWith('0',0)) {
+					phone = "031-" + phone;
+				}
 				
 				$(this).find('.modal-title').text(name);
 				$(this).find('.modal-footer #spec')
 						.html("<b>주소:</b> " + addr )
-						.append("<br><b>전화번호:</b> " + phone);
+						.append("<br/><b>전화번호:</b> <a href='tel:"+phone+"'>"+ phone + "</a>");
 				
 				$.ajax({
 					url: "/ApiTest",
@@ -260,7 +280,7 @@
 					data: {address : addr},
 				}).done(function(json){
 					if(json != null) {
-						console.log(json);
+						//console.log(json);
 						var obj = JSON.parse(JSON.stringify(json));	
 						x = obj.result.items[0].point.x;
 						y = obj.result.items[0].point.y;
