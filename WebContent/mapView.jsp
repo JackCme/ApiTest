@@ -15,7 +15,7 @@
 	        <div id="map" style="margin:auto;width:100%;"></div>
 	      </div>
 	      <div class="modal-footer">
-	      	<div id="spec" style="float:left;"></div>
+	      	<div id="spec" style="float:left;" align="left"></div>
 	        <button style="float:right;"id="btnClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	      </div>
 	    </div>

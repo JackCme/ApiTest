@@ -30,9 +30,13 @@ public class ApiData {
 	
 	private List<String> idx = new ArrayList<String>();
 	private List<String> name = new ArrayList<String>();
+	private List<String> ceo = new ArrayList<String>();
+	private List<String> gu = new ArrayList<String>();
+	private List<String> dong = new ArrayList<String>();
 	private List<String> phone = new ArrayList<String>();
 	private List<String> addr = new ArrayList<String>();
 	private List<String> category = new ArrayList<String>();
+	private List<String> genre = new ArrayList<String>();
 	
 	private Connection conn = null;
 	private Statement stat = null;
@@ -46,6 +50,47 @@ public class ApiData {
 		String db_pwd="dbadministrator";
 		String query;
 		
+		try {
+			
+			Class.forName("com.mysql.jdbc.Driver");
+			conn=DriverManager.getConnection(db_url,db_user,db_pwd);
+			if(conn==null)
+				throw new Exception("DB ¿¬°á Error");
+			
+			stat = conn.createStatement();
+			query = "select count(*) as total from newApi";
+			rs = stat.executeQuery(query);
+			if(rs.next()) {
+				this.totalCount = rs.getInt("total");
+			}
+			
+			
+			query = "select * from newApi";
+			pstmt = (PreparedStatement) conn.prepareStatement(query);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				idx.add(rs.getString("idx"));
+				name.add(rs.getString("name"));
+				phone.add(rs.getString("phone"));
+				ceo.add(rs.getString("ceo"));
+				gu.add(rs.getString("gu"));
+				dong.add(rs.getString("dong"));
+				addr.add(rs.getString("address"));
+				category.add(rs.getString("category"));
+				genre.add(rs.getString("genre"));
+			}
+			
+			rs.close();
+			pstmt.close();
+			stat.close();
+			conn.close();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		/*
 		try {
 			
 			Class.forName("com.mysql.jdbc.Driver");
@@ -81,6 +126,7 @@ public class ApiData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 	
 	public int getTotalCount() {
@@ -105,6 +151,22 @@ public class ApiData {
 	
 	public List<String> getCategory() {
 		return this.category;
+	}
+	
+	public List<String> getCeo() {
+		return this.ceo;
+	}
+	
+	public List<String> getGu() {
+		return this.gu;
+	}
+	
+	public List<String> getDong() {
+		return this.dong;
+	}
+	
+	public List<String> getGenre() {
+		return this.genre;
 	}
 	
 	public static ApiData getInstance() {

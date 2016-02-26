@@ -65,30 +65,23 @@ public class ApiDataServlet extends HttpServlet {
 		List<String> addr = apiData.getAddr();
 		List<String> idx = apiData.getIdx();
 		List<String> name = apiData.getName();
-		List<String> cat = apiData.getCategory();
+		List<String> ceo = apiData.getCeo();
 		
-		Set<String> gu = new LinkedHashSet<String>();
-		Set<String> dong = new LinkedHashSet<String>();
-		Set<String> category = new LinkedHashSet<String>();
+		Set<String> gu = new LinkedHashSet<String>(apiData.getGu());
+		Set<String> dong = new LinkedHashSet<String>(apiData.getDong());
+		Set<String> category = new LinkedHashSet<String>(apiData.getCategory());
+		Set<String> genre = new LinkedHashSet<String>(apiData.getGenre());
 		
-		for(String a : addr) {
-			String[] splitStr = a.split(" ");
-			
-			gu.add(splitStr[0]);
-			dong.add(splitStr[1]);
-		}
-		
-		for(String c : cat) {
-			category.add(c);
-		}
 
 		request.setAttribute("totalCount", totalCount);
 		request.setAttribute("idx", idx);
-		request.setAttribute("name", name);
-		request.setAttribute("addr", addr);
-		request.setAttribute("category", category);
-		request.setAttribute("gu", gu);
-		request.setAttribute("dong", dong);
+		request.setAttribute("names", name);
+		request.setAttribute("addresses", addr);
+		request.setAttribute("ceos", ceo);
+		request.setAttribute("categories", category);
+		request.setAttribute("gus", gu);
+		request.setAttribute("dongs", dong);
+		request.setAttribute("genres", genre);
 		
 		RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/index.jsp");
 		requestDispatcher.forward(request, response);
